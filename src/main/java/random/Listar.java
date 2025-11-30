@@ -14,6 +14,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Listar {
 
+	private ArrayList<Personajes> listaFavoritos;
+
+	public Listar() {
+		listaFavoritos = new ArrayList<Personajes>();
+	}
+
 	public void listarPeronsajes() {
 		Scanner sc = new Scanner(System.in);
 		ArrayList<String> personajesLista = new ArrayList<String>();
@@ -284,6 +290,21 @@ public class Listar {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void listarFavoritos() {
+		for (int i = 0; i < listaFavoritos.size(); i++) {
+			Personajes u = listaFavoritos.get(i);
+			System.out.println(u.toString());
+		}
+	}
+
+	public void añadirFavoritos(String nombre) {
+		
+	}
+
+	public void quitarFavoritos(String nombre) {
+
 	}
 
 	public static void clearConsole() {
