@@ -35,57 +35,65 @@ public class Listar {
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/characters/en"))
 				.build();
 		try {
+			System.out.print("Si quieres los resultados paginados ponga 1: ");
+			String decision = sc.nextLine();
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
 			Personajes[] usuarios = datos.getPersonajes();
 
 			System.out.println("Personajes:\n");
-			boolean fin = false;
-			int contador = 0;
-			while (!fin) {
-				Personajes u = usuarios[contador];
-				personajesLista.add(u.toString());
-				contador++;
-				if (contador == usuarios.length) {
-					fin = true;
+			if (decision.equals("1")) {
+				boolean fin = false;
+				int contador = 0;
+				while (!fin) {
+					Personajes u = usuarios[contador];
+					personajesLista.add(u.toString());
+					contador++;
+					if (contador == usuarios.length) {
+						fin = true;
+					}
 				}
-			}
-			int elegirPagina = 0;
-			for (int i = 0; i < personajesLista.size(); i++) {
-				System.out.println(personajesLista.get(i));
-				if ((i + 1) % 5 == 0 && i != 0) {
-					boolean seguir = true;
-					do {
-						System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
-						try {
-							elegirPagina = sc.nextInt();
-							switch (elegirPagina) {
-							case 0:
-								i = personajesLista.size();
-								seguir = false;
-								break;
-							case 1:
-								clearConsole();
-								seguir = false;
-								break;
-							case 2:
-								clearConsole();
-								if (i == 4 || i == -1) {
-									System.out.println("No hay pagina anterior");
-									i = -1;
-								} else {
-									i = i - 10;
+				int elegirPagina = 0;
+				for (int i = 0; i < personajesLista.size(); i++) {
+					System.out.println(personajesLista.get(i));
+					if ((i + 1) % 5 == 0 && i != 0) {
+						boolean seguir = true;
+						do {
+							System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
+							try {
+								elegirPagina = sc.nextInt();
+								switch (elegirPagina) {
+								case 0:
+									i = personajesLista.size();
 									seguir = false;
+									break;
+								case 1:
+									clearConsole();
+									seguir = false;
+									break;
+								case 2:
+									clearConsole();
+									if (i == 4 || i == -1) {
+										System.out.println("No hay pagina anterior");
+										i = -1;
+									} else {
+										i = i - 10;
+										seguir = false;
+									}
+									break;
+								default:
+									System.out.println("Elige un numero correcto");
 								}
-								break;
-							default:
-								System.out.println("Elige un numero correcto");
+							} catch (InputMismatchException e) {
+								System.err.println("Introuce un numero, no un caracter\n");
+								sc.next();
 							}
-						} catch (InputMismatchException e) {
-							System.err.println("Introuce un numero, no un caracter\n");
-							sc.next();
-						}
-					} while (seguir);
+						} while (seguir);
+					}
+				}
+			} else {
+				for (Personajes u : usuarios) {
+					System.out.println(u.toString());
 				}
 			}
 		} catch (IOException e) {
@@ -103,57 +111,65 @@ public class Listar {
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/fruits/en"))
 				.build();
 		try {
+			System.out.print("Si quieres los resultados paginados ponga 1: ");
+			String decision = sc.nextLine();
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			ListarFrutas datos = om.readValue(response.body(), ListarFrutas.class);
 			Fruta[] usuarios = datos.getFrutas();
 
 			System.out.println("Frutas:\n");
-			boolean fin = false;
-			int contador = 0;
-			while (!fin) {
-				Fruta u = usuarios[contador];
-				personajesLista.add(u.toString());
-				contador++;
-				if (contador == usuarios.length) {
-					fin = true;
+			if (decision.equals("1")) {
+				boolean fin = false;
+				int contador = 0;
+				while (!fin) {
+					Fruta u = usuarios[contador];
+					personajesLista.add(u.toString());
+					contador++;
+					if (contador == usuarios.length) {
+						fin = true;
+					}
 				}
-			}
-			int elegirPagina = 0;
-			for (int i = 0; i < personajesLista.size(); i++) {
-				System.out.println(personajesLista.get(i));
-				if ((i + 1) % 5 == 0 && i != 0) {
-					boolean seguir = true;
-					do {
-						System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
-						try {
-							elegirPagina = sc.nextInt();
-							switch (elegirPagina) {
-							case 0:
-								i = personajesLista.size();
-								seguir = false;
-								break;
-							case 1:
-								clearConsole();
-								seguir = false;
-								break;
-							case 2:
-								clearConsole();
-								if (i == 4 || i == -1) {
-									System.out.println("No hay pagina anterior");
-									i = -1;
-								} else {
-									i = i - 10;
+				int elegirPagina = 0;
+				for (int i = 0; i < personajesLista.size(); i++) {
+					System.out.println(personajesLista.get(i));
+					if ((i + 1) % 5 == 0 && i != 0) {
+						boolean seguir = true;
+						do {
+							System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
+							try {
+								elegirPagina = sc.nextInt();
+								switch (elegirPagina) {
+								case 0:
+									i = personajesLista.size();
 									seguir = false;
+									break;
+								case 1:
+									clearConsole();
+									seguir = false;
+									break;
+								case 2:
+									clearConsole();
+									if (i == 4 || i == -1) {
+										System.out.println("No hay pagina anterior");
+										i = -1;
+									} else {
+										i = i - 10;
+										seguir = false;
+									}
+									break;
+								default:
+									System.out.println("Elige un numero correcto");
 								}
-								break;
-							default:
-								System.out.println("Elige un numero correcto");
+							} catch (InputMismatchException e) {
+								System.err.println("Introuce un numero, no un caracter\n");
+								sc.next();
 							}
-						} catch (InputMismatchException e) {
-							System.err.println("Introuce un numero, no un caracter\n");
-							sc.next();
-						}
-					} while (seguir);
+						} while (seguir);
+					}
+				}
+			} else {
+				for (Fruta u : usuarios) {
+					System.out.println(u.toString());
 				}
 			}
 		} catch (IOException e) {
@@ -171,57 +187,65 @@ public class Listar {
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/crews/en"))
 				.build();
 		try {
+			System.out.print("Si quieres los resultados paginados ponga 1: ");
+			String decision = sc.nextLine();
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			ListarTripulacion datos = om.readValue(response.body(), ListarTripulacion.class);
 			Tripulacion[] usuarios = datos.getTripulaciones();
 
 			System.out.println("Tripulaciones:\n");
-			boolean fin = false;
-			int contador = 0;
-			while (!fin) {
-				Tripulacion u = usuarios[contador];
-				personajesLista.add(u.toString());
-				contador++;
-				if (contador == usuarios.length) {
-					fin = true;
+			if (decision.equals("1")) {
+				boolean fin = false;
+				int contador = 0;
+				while (!fin) {
+					Tripulacion u = usuarios[contador];
+					personajesLista.add(u.toString());
+					contador++;
+					if (contador == usuarios.length) {
+						fin = true;
+					}
 				}
-			}
-			int elegirPagina = 0;
-			for (int i = 0; i < personajesLista.size(); i++) {
-				System.out.println(personajesLista.get(i));
-				if ((i + 1) % 5 == 0 && i != 0) {
-					boolean seguir = true;
-					do {
-						System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
-						try {
-							elegirPagina = sc.nextInt();
-							switch (elegirPagina) {
-							case 0:
-								i = personajesLista.size();
-								seguir = false;
-								break;
-							case 1:
-								clearConsole();
-								seguir = false;
-								break;
-							case 2:
-								clearConsole();
-								if (i == 4 || i == -1) {
-									System.out.println("No hay pagina anterior");
-									i = -1;
-								} else {
-									i = i - 10;
+				int elegirPagina = 0;
+				for (int i = 0; i < personajesLista.size(); i++) {
+					System.out.println(personajesLista.get(i));
+					if ((i + 1) % 5 == 0 && i != 0) {
+						boolean seguir = true;
+						do {
+							System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
+							try {
+								elegirPagina = sc.nextInt();
+								switch (elegirPagina) {
+								case 0:
+									i = personajesLista.size();
 									seguir = false;
+									break;
+								case 1:
+									clearConsole();
+									seguir = false;
+									break;
+								case 2:
+									clearConsole();
+									if (i == 4 || i == -1) {
+										System.out.println("No hay pagina anterior");
+										i = -1;
+									} else {
+										i = i - 10;
+										seguir = false;
+									}
+									break;
+								default:
+									System.out.println("Elige un numero correcto");
 								}
-								break;
-							default:
-								System.out.println("Elige un numero correcto");
+							} catch (InputMismatchException e) {
+								System.err.println("Introuce un numero, no un caracter\n");
+								sc.next();
 							}
-						} catch (InputMismatchException e) {
-							System.err.println("Introuce un numero, no un caracter\n");
-							sc.next();
-						}
-					} while (seguir);
+						} while (seguir);
+					}
+				}
+			} else {
+				for (Tripulacion u : usuarios) {
+					System.out.println(u.toString());
 				}
 			}
 		} catch (IOException e) {
@@ -239,57 +263,65 @@ public class Listar {
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/boats/en"))
 				.build();
 		try {
+			System.out.print("Si quieres los resultados paginados ponga 1: ");
+			String decision = sc.nextLine();
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			ListarBarcos datos = om.readValue(response.body(), ListarBarcos.class);
 			Barco[] usuarios = datos.getBarco();
 
 			System.out.println("Barcos:\n");
-			boolean fin = false;
-			int contador = 0;
-			while (!fin) {
-				Barco u = usuarios[contador];
-				personajesLista.add(u.toString());
-				contador++;
-				if (contador == usuarios.length) {
-					fin = true;
+			if (decision.equals("1")) {
+				boolean fin = false;
+				int contador = 0;
+				while (!fin) {
+					Barco u = usuarios[contador];
+					personajesLista.add(u.toString());
+					contador++;
+					if (contador == usuarios.length) {
+						fin = true;
+					}
 				}
-			}
-			int elegirPagina = 0;
-			for (int i = 0; i < personajesLista.size(); i++) {
-				System.out.println(personajesLista.get(i));
-				if ((i + 1) % 5 == 0 && i != 0) {
-					boolean seguir = true;
-					do {
-						System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
-						try {
-							elegirPagina = sc.nextInt();
-							switch (elegirPagina) {
-							case 0:
-								i = personajesLista.size();
-								seguir = false;
-								break;
-							case 1:
-								clearConsole();
-								seguir = false;
-								break;
-							case 2:
-								clearConsole();
-								if (i == 4 || i == -1) {
-									System.out.println("No hay pagina anterior");
-									i = -1;
-								} else {
-									i = i - 10;
+				int elegirPagina = 0;
+				for (int i = 0; i < personajesLista.size(); i++) {
+					System.out.println(personajesLista.get(i));
+					if ((i + 1) % 5 == 0 && i != 0) {
+						boolean seguir = true;
+						do {
+							System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
+							try {
+								elegirPagina = sc.nextInt();
+								switch (elegirPagina) {
+								case 0:
+									i = personajesLista.size();
 									seguir = false;
+									break;
+								case 1:
+									clearConsole();
+									seguir = false;
+									break;
+								case 2:
+									clearConsole();
+									if (i == 4 || i == -1) {
+										System.out.println("No hay pagina anterior");
+										i = -1;
+									} else {
+										i = i - 10;
+										seguir = false;
+									}
+									break;
+								default:
+									System.out.println("Elige un numero correcto");
 								}
-								break;
-							default:
-								System.out.println("Elige un numero correcto");
+							} catch (InputMismatchException e) {
+								System.err.println("Introuce un numero, no un caracter\n");
+								sc.next();
 							}
-						} catch (InputMismatchException e) {
-							System.err.println("Introuce un numero, no un caracter\n");
-							sc.next();
-						}
-					} while (seguir);
+						} while (seguir);
+					}
+				}
+			} else {
+				for (Barco u : usuarios) {
+					System.out.println(u.toString());
 				}
 			}
 		} catch (IOException e) {
@@ -331,7 +363,7 @@ public class Listar {
 				for (Personajes u : usuarios) {
 					if (u.getName().equals(nombre)) {
 						listaFavoritos.add(u);
-						System.out.println("Se añadio correctamente");
+						System.out.println("Se anhadio correctamente");
 						return true;
 					}
 				}
@@ -386,8 +418,8 @@ public class Listar {
 				Personajes[] usuarios = datos.getPersonajes();
 				for (Personajes u : usuarios) {
 					if (nombres.contains(u.getName())) {
-				        listaFavoritos.add(u);
-				    }
+						listaFavoritos.add(u);
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

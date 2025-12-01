@@ -36,7 +36,7 @@ public class Main {
 		boolean terminar = false;
 		System.out.println();
 		while (!terminar) {
-			System.out.println("Elige el dato que quieras listar");
+			System.out.println("---- Listar ----");
 			System.out.println("1. Personajes");
 			System.out.println("2. Frutas");
 			System.out.println("3. Tripulaciones");
@@ -117,7 +117,7 @@ public class Main {
 		boolean terminar = false;
 		System.out.println();
 		while (!terminar) {
-			System.out.println("Anhade o lista personajes favoritos");
+			System.out.println("---- Favortios ----");
 			System.out.println("1. Anhadir a la lista de personajes favoritos");
 			System.out.println("2. Quitar de la lista de personajes favoritos");
 			System.out.println("3. Listar personajes favoritos");
@@ -182,6 +182,48 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+	
+	public void datosSeleccion() {
+		Scanner sc = new Scanner(System.in);
+		Datos datos = new Datos();
+		int eleccion = 0;
+		boolean terminar = false;
+		System.out.println();
+		while (!terminar) {
+			System.out.println("---- Datos interesantes ----");
+			System.out.println("1. Top 10 personajes con mayor recompensa");
+			System.out.println("2. Distribucion de los tipos de frutas del diablo");
+			System.out.println("3. xxx");
+			System.out.println("4. xxx");
+			System.out.println("5. Salir");
+			System.out.print("Introuce una opcion de las disponibles: ");
+			try {
+				eleccion = sc.nextInt();
+				switch (eleccion) {
+				case 1:
+					datos.recompensas();
+					break;
+				case 2:
+					datos.tiposFrutas();
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					System.out.println("Hasta la proxima");
+					terminar = true;
+					break;
+				default:
+					System.out.println("Porfavor introduzca un numero correcto");
+				}
+				System.out.println();
+			} catch (InputMismatchException e) {
+				System.err.println("Introuce un numero, no un caracter\n");
+				sc.next();
+			}
+		}
+	}
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -209,11 +251,12 @@ public class Main {
 		}
 		int eleccion = 0;
 		boolean terminar = false;
+		System.out.println();
 		while (!terminar) {
 			System.out.println("==== APLICACION ONE PIECE ====");
 			System.out.println("1. Listar");
 			System.out.println("2. Favortios");
-			System.out.println("3. Datos");
+			System.out.println("3. Datos interesantes");
 			System.out.println("4. Juegos");
 			System.out.println("5. Salir");
 			System.out.print("Introuce una opcion de las disponibles: ");
@@ -227,24 +270,24 @@ public class Main {
 					main.favoritosOpciones();
 					break;
 				case 3:
-					System.out.println("Hasta la proxima");
+					main.datosSeleccion();
 					break;
 				case 4:
-					System.out.println("Hola4");
+					System.out.println("Por implementar 4");
 					break;
 				case 5:
-					System.out.println("Hasta la proxima");
+					System.out.println();
 					terminar = true;
 					break;
 				default:
 					System.out.println("Porfavor introduzca un numero correcto");
 				}
-				System.out.println();
 			} catch (InputMismatchException e) {
 				System.err.println("Introuce un numero, no un caracter\n");
 				sc.next();
 			}
 		}
+		System.out.println("Hasta la proxima");
 
 	}
 
