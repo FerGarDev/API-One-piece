@@ -310,16 +310,16 @@ public class Listar {
 		}
 	}
 
-	public boolean añadirFavoritos(String nombre) {
-		boolean añadir = true;
+	public boolean anhadirFavoritos(String nombre) {
+		boolean anhadir = true;
 		for (int i = 0; i < listaFavoritos.size(); i++) {
 			Personajes u = listaFavoritos.get(i);
 			if (u.getName().equals(nombre)) {
 				System.out.println("El personaje ya esta en la lista");
-				añadir = false;
+				anhadir = false;
 			}
 		}
-		if (añadir) {
+		if (anhadir) {
 			ObjectMapper om = new ObjectMapper();
 			HttpClient client = HttpClient.newHttpClient();
 			HttpRequest request = HttpRequest.newBuilder()

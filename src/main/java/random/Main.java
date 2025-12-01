@@ -72,7 +72,7 @@ public class Main {
 		}
 	}
 
-	public void añadirListaFav(String nombre) {
+	public void anhadirListaFav(String nombre) {
 		try (FileOutputStream fos = new FileOutputStream(archivo, true);
 				BufferedOutputStream bos = new BufferedOutputStream(fos)) {
 			bos.write(nombre.getBytes());
@@ -117,8 +117,8 @@ public class Main {
 		boolean terminar = false;
 		System.out.println();
 		while (!terminar) {
-			System.out.println("Añade o lista personajes favoritos");
-			System.out.println("1. Añadir a la lista de personajes favoritos");
+			System.out.println("Anhade o lista personajes favoritos");
+			System.out.println("1. Anhadir a la lista de personajes favoritos");
 			System.out.println("2. Quitar de la lista de personajes favoritos");
 			System.out.println("3. Listar personajes favoritos");
 			System.out.println("4. Salir");
@@ -128,11 +128,11 @@ public class Main {
 				switch (eleccion) {
 				case 1:
 					sc.nextLine();
-					System.out.print("Pon el nombre EXACTO del personaje que quieras añadir: ");
+					System.out.print("Pon el nombre EXACTO del personaje que quieras anhadir: ");
 					String nombre = sc.nextLine();
 					if (listaPersonajes.contains(nombre)) {
-						if (listar.añadirFavoritos(nombre)) {
-							añadirListaFav(nombre);
+						if (listar.anhadirFavoritos(nombre)) {
+							anhadirListaFav(nombre);
 						}
 					} else {
 						System.out.println("No existe ese personaje");
@@ -188,7 +188,7 @@ public class Main {
 		Main main = new Main();
 		main.cargarLista();
 		System.out.println(
-				"Ponga la ruta del fichero que quiere usar, en caso de poner un archivo con contenido no realcionado con el programa se vaciara su contenido: ");
+				"Ponga la ruta del fichero que quiere usar, en caso de poner un archivo con contenido no relacionado con el programa se vaciara su contenido: ");
 		String ruta = sc.nextLine();
 		archivo = new File(ruta);
 		try {
