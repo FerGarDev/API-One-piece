@@ -1,5 +1,10 @@
 package random;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -7,8 +12,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -293,23 +300,100 @@ public class Listar {
 	}
 
 	public void listarFavoritos() {
-		for (int i = 0; i < listaFavoritos.size(); i++) {
-			Personajes u = listaFavoritos.get(i);
-			System.out.println(u.toString());
+		if (listaFavoritos.isEmpty()) {
+			System.out.println("No hay nadie en la lista de favoritos");
+		} else {
+			for (int i = 0; i < listaFavoritos.size(); i++) {
+				Personajes u = listaFavoritos.get(i);
+				System.out.println(u.toString());
+			}
 		}
 	}
 
-	public void añadirFavoritos(String nombre) {
-		
+	public boolean añadirFavoritos(String nombre) {
+		boolean añadir = true;
+		for (int i = 0; i < listaFavoritos.size(); i++) {
+			Personajes u = listaFavoritos.get(i);
+			if (u.getName().equals(nombre)) {
+				System.out.println("El personaje ya esta en la lista");
+				añadir = false;
+			}
+		}
+		if (añadir) {
+			ObjectMapper om = new ObjectMapper();
+			HttpClient client = HttpClient.newHttpClient();
+			HttpRequest request = HttpRequest.newBuilder()
+					.uri(URI.create("https://api.api-onepiece.com/v2/characters/en")).build();
+			try {
+				HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+				ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
+				Personajes[] usuarios = datos.getPersonajes();
+				for (Personajes u : usuarios) {
+					if (u.getName().equals(nombre)) {
+						listaFavoritos.add(u);
+						System.out.println("Se añadio correctamente");
+						return true;
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 
-	public void quitarFavoritos(String nombre) {
-
+	public boolean quitarFavoritos(String nombre) {
+		for (int i = 0; i < listaFavoritos.size(); i++) {
+			Personajes u = listaFavoritos.get(i);
+			if (u.getName().equals(nombre)) {
+				listaFavoritos.remove(i);
+				System.out.println("El personaje se quito");
+				return true;
+			}
+		}
+		System.out.println("Ese personaje no estaba en la lista");
+		return false;
 	}
 
 	public static void clearConsole() {
 		for (int i = 0; i < 50; i++) {
 			System.out.println();
+		}
+	}
+
+	public void cargarFavoritos(File file) {
+		ArrayList<String> nombrePersonaje = new ArrayList<String>();
+		try (FileReader fr = new FileReader(file); BufferedReader fw = new BufferedReader(fr)) {
+			String linea = fw.readLine();
+			while (linea != null) {
+				nombrePersonaje.add(linea);
+				linea = fw.readLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if (!nombrePersonaje.isEmpty()) {
+			Set<String> nombres = new HashSet<>(nombrePersonaje);
+			ObjectMapper om = new ObjectMapper();
+			HttpClient client = HttpClient.newHttpClient();
+			HttpRequest request = HttpRequest.newBuilder()
+					.uri(URI.create("https://api.api-onepiece.com/v2/characters/en")).build();
+			try {
+				HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+				ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
+				Personajes[] usuarios = datos.getPersonajes();
+				for (Personajes u : usuarios) {
+					if (nombres.contains(u.getName())) {
+				        listaFavoritos.add(u);
+				    }
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

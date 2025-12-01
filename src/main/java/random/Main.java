@@ -1,5 +1,12 @@
 package random;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Main {
 
 	private ArrayList<String> listaPersonajes;
+	private static File archivo;
 
 	public Main() {
 		listaPersonajes = new ArrayList<String>();
@@ -64,10 +72,48 @@ public class Main {
 		}
 	}
 
+	public void añadirListaFav(String nombre) {
+		try (FileOutputStream fos = new FileOutputStream(archivo, true);
+				BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+			bos.write(nombre.getBytes());
+			bos.write('\n');
+			bos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void quitarListaFav(String nombre) {
+		ArrayList<String> listaGuardar = new ArrayList<String>();
+		try (FileReader fr = new FileReader(archivo); BufferedReader br = new BufferedReader(fr)) {
+			String linea = br.readLine();
+			while (linea != null) {
+				if(!linea.equals(nombre)) {
+					listaGuardar.add(linea);
+				}
+				linea = br.readLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try (FileOutputStream fos = new FileOutputStream(archivo, false);
+				BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+			if(!listaGuardar.isEmpty()) {
+				for(int i = 0; i < listaGuardar.size(); i++) {
+					bos.write(listaGuardar.get(i).getBytes());
+					bos.write('\n');
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void favoritosOpciones() {
 		Scanner sc = new Scanner(System.in);
 		int eleccion = 0;
 		Listar listar = new Listar();
+		listar.cargarFavoritos(archivo);
 		boolean terminar = false;
 		System.out.println();
 		while (!terminar) {
@@ -85,16 +131,20 @@ public class Main {
 					System.out.print("Pon el nombre EXACTO del personaje que quieras añadir: ");
 					String nombre = sc.nextLine();
 					if (listaPersonajes.contains(nombre)) {
-						listar.añadirFavoritos(nombre);
+						if (listar.añadirFavoritos(nombre)) {
+							añadirListaFav(nombre);
+						}
 					} else {
-						System.out.println("No esta");
+						System.out.println("No existe ese personaje");
 					}
 					break;
 				case 2:
 					sc.nextLine();
 					System.out.print("Pon el nombre EXACTO del personaje que quieres quitar: ");
 					String nombre2 = sc.nextLine();
-					listar.quitarFavoritos(nombre2);
+					if (listar.quitarFavoritos(nombre2)) {
+						quitarListaFav(nombre2);
+					}
 					break;
 				case 3:
 					listar.listarFavoritos();
@@ -113,10 +163,50 @@ public class Main {
 		}
 	}
 
+	public void vaciar() {
+		try (FileOutputStream fos = new FileOutputStream(archivo, false)) {
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void comprobar() {
+		try (FileReader fr = new FileReader(archivo); BufferedReader fw = new BufferedReader(fr)) {
+			String linea = fw.readLine();
+			if (!listaPersonajes.contains(linea) && linea != null) {
+				System.out.println(
+						"ERROR, El archivo no es procesable debido a que contiene contenido no desea, se vaciara automaticamente");
+				vaciar();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		Main main = new Main();
 		main.cargarLista();
+		System.out.println(
+				"Ponga la ruta del fichero que quiere usar, en caso de poner un archivo con contenido no realcionado con el programa se vaciara su contenido: ");
+		String ruta = sc.nextLine();
+		archivo = new File(ruta);
+		try {
+			if (archivo.createNewFile()) {
+				System.out.println("Archivo creado");
+			} else {
+				System.out.println("Archivo ya existente");
+				System.out.print("Si quiere vaciar el archivo ponga 1: ");
+				String eleccion = sc.nextLine();
+				if (eleccion.equals("1")) {
+					main.vaciar();
+				} else {
+					main.comprobar();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		int eleccion = 0;
 		boolean terminar = false;
 		while (!terminar) {
@@ -159,7 +249,6 @@ public class Main {
 	}
 
 	public void cargarLista() {
-		Scanner sc = new Scanner(System.in);
 		ObjectMapper om = new ObjectMapper();
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/characters/en"))
