@@ -16,6 +16,7 @@ public class Personajes {
 	private Tripulacion crew;
 	private Fruta fruit;
 
+	// Clase de Personajes, con todos los datos que usaremos de la API
 	public Personajes() {
 		super();
 	}
@@ -87,6 +88,8 @@ public class Personajes {
 	@Override
 	public String toString() {
 
+		// Para no tener errores el dato se da por hecho que no se tiene, luego se
+		// comprueba si no es null y en tal caso se sustituira por un dato existente
 		String nombreTripulacion = "No tiene";
 		String nombreFruta = "No tiene";
 		if (crew != null) {

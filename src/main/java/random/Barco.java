@@ -14,6 +14,7 @@ public class Barco {
 	private Personajes character_captain;
 	private Fruta fruit;
 
+	// Clase de Barco, con todos los datos que usaremos de la API
 	public Barco() {
 		super();
 	}
@@ -71,6 +72,8 @@ public class Barco {
 		String nombreFruta = "No tiene";
 		String nombreTripulacion = "No es de ninguna tripulacion";
 
+		// Para no tener errores el dato se da por hecho que no se tiene, luego se
+		// comprueba si no es null y en tal caso se sustituira por un dato existente
 		if (crew != null) {
 			nombreTripulacion = crew.getName();
 		}

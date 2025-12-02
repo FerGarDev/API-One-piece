@@ -14,6 +14,7 @@ public class Tripulacion {
 	private String number;
 	private boolean is_yonko;
 
+	// Clase de Tripulaciones, con todos los datos que usaremos de la API
 	public Tripulacion() {
 		super();
 	}

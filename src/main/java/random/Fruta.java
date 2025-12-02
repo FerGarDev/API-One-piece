@@ -11,6 +11,7 @@ public class Fruta {
 	private String roman_name;
 	private String type;
 
+	// Clase de Frutas, con todos los datos que usaremos de la API
 	private Fruta() {
 		super();
 	}

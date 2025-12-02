@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class ListaPersonajes {
 	private Personajes[] personajes;
 
+	// Debido a que viene sin nombre los datos de la API se recive el array de la
+	// API y con el JSonCreator hacemos que Jackson use este contructor para crear
+	// los objetos
 	@JsonCreator
 	public ListaPersonajes(Personajes[] personajes) {
 		this.personajes = personajes;
