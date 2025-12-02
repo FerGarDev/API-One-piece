@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class Ahorcado {
 
-	public void juegoAhoracado(String nombrePersonaje) {
+	public void juegoAhoracado(String nombrePersonaje, String pista) {
 
 		Scanner sc = new Scanner(System.in);
 		System.out.println();
@@ -52,10 +52,12 @@ public class Ahorcado {
 			// Aqui verificaremos que la entrada de la letra es correcta
 			boolean seguirVerificacion = true;
 			while (seguirVerificacion) {
+				// El try servira por si se pone la linea vacia
 				try {
 					boolean actualizarVerificacion = true;
 					System.out.print("Indique una letra: ");
 					input = sc.nextLine().toLowerCase();
+					// Se verifica que solo sea un caracter correcto no repetido
 					if (input.length() > 1) {
 						System.out.println("Debes introducir solo un carácter.");
 						actualizarVerificacion = false;
@@ -84,6 +86,8 @@ public class Ahorcado {
 
 			boolean acertada = false;
 
+			// Despues se comprueba que sea parte de la palabra original poniendole el valor
+			// si lo es
 			for (int i = 0; i < letras.length; i++) {
 				char letraMayus = Character.toUpperCase(letra);
 				if (letras[i] == letra) {
@@ -95,10 +99,15 @@ public class Ahorcado {
 				}
 			}
 
+			// Finalmente se comprueba si ganaste, se te acabaron los intentos o si fallaste
+			// el intento
 			if (!acertada) {
 				limiteFallos--;
 				System.out.println("Esa letra no está en la palabra");
 				System.out.println("Fallos restantes: " + limiteFallos);
+				if (limiteFallos < 4) {
+					System.out.println("PISTA -> El personaje tiene de trabajo/hace -> " + pista);
+				}
 			}
 
 			if (String.valueOf(letrasAcertadas).equalsIgnoreCase(String.valueOf(letras))) {

@@ -16,19 +16,21 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Main {
 
-	// Variable de lista de nombres de todos los personajes y archivo
-	private ArrayList<String> listaPersonajes;
+	// Variable de lista de nombres de todos los personajes con su trabajo y archivo
+	private Map<String, String> listaPersonajes;
 	private static File archivo;
 
 	public Main() {
-		listaPersonajes = new ArrayList<String>();
+		listaPersonajes = new HashMap<String, String>();
 	}
 
 	public void elegirListado() {
@@ -148,7 +150,8 @@ public class Main {
 					sc.nextLine();
 					System.out.print("Pon el nombre EXACTO del personaje que quieras añadir: ");
 					String nombre = sc.nextLine();
-					if (listaPersonajes.contains(nombre)) {
+					ArrayList<String> keys = new ArrayList<>(listaPersonajes.keySet());
+					if (keys.contains(nombre)) {
 						if (listar.anhadirFavoritos(nombre)) {
 							anhadirListaFav(nombre);
 						}
@@ -201,7 +204,8 @@ public class Main {
 		try (FileReader fr = new FileReader(archivo); BufferedReader fw = new BufferedReader(fr)) {
 			String linea = fw.readLine();
 			// Se comprueba con un contains de la lista
-			if (!listaPersonajes.contains(linea) && linea != null) {
+			ArrayList<String> keys = new ArrayList<>(listaPersonajes.keySet());
+			if (!keys.contains(linea) && linea != null) {
 				System.out.println(
 						"ERROR, El archivo no es procesable debido a que contiene contenido no desea, se vaciara automaticamente");
 				vaciar();
@@ -291,16 +295,21 @@ public class Main {
 						if (listaFavTemp.isEmpty()) {
 							System.out.println("No tienes nadie en la lista de favs, no puedes jugar");
 						} else {
-							Collections.shuffle(listaFavTemp);
-							Personajes personaje = listaFavTemp.get(0);
-							String nombrePersonaje = personaje.getName();
-							ahorcado.juegoAhoracado(nombrePersonaje);
+							// Acedemos a todo de nuevo para poder conseguir el trabajo del personaje
+							int random = (int) (Math.random() * listaFavTemp.size());
+							Personajes personaje = listaFavTemp.get(random);
+							if (personaje.getJob() == null || personaje.getJob().equals("")) {
+								ahorcado.juegoAhoracado(personaje.getName(), "No hace nada");
+							} else {
+								ahorcado.juegoAhoracado(personaje.getName(), personaje.getJob());
+							}
 						}
 						// Si se juega con todos los personajes se usara la lista de todos los
 						// personajes
 					} else {
-						Collections.shuffle(listaPersonajes);
-						ahorcado.juegoAhoracado(listaPersonajes.get(0));
+						int random = (int) (Math.random() * listaPersonajes.size());
+						ArrayList<String> keys = new ArrayList<>(listaPersonajes.keySet());
+						ahorcado.juegoAhoracado(keys.get(random), listaPersonajes.get(keys.get(random)));
 					}
 					break;
 				case 2:
@@ -422,7 +431,12 @@ public class Main {
 			ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
 			Personajes[] usuarios = datos.getPersonajes();
 			for (Personajes u : usuarios) {
-				listaPersonajes.add(u.getName());
+				// Si es null o no hay nada tendra valor por defecto
+				if (u.getJob() == null || u.getJob().equals("")) {
+					listaPersonajes.put(u.getName(), "No hace nada");
+				} else {
+					listaPersonajes.put(u.getName(), u.getJob());
+				}
 			}
 			return false;
 			// Si salta un error se devolvera true
