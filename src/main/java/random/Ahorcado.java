@@ -13,11 +13,14 @@ public class Ahorcado {
 		System.out.println();
 		boolean partidaTerminada = false;
 
+		// Se pone la palabra en un array de chars
 		String palabraAleatoria = nombrePersonaje;
 		char[] letras = palabraAleatoria.toCharArray();
 
 		int limiteFallos = 6;
 
+		// Se declara y rellena el array que mostrara un _ por letra siempre que esta
+		// sea una letra y no otro cacracter
 		char[] letrasAcertadas = new char[letras.length];
 		for (int i = 0; i < letras.length; i++) {
 			if (letras[i] >= 65 && letras[i] <= 90 || letras[i] >= 97 && letras[i] <= 122) {
@@ -27,6 +30,7 @@ public class Ahorcado {
 			}
 		}
 
+		// Set de letras usuadas para mostrarlas bien
 		Set<Character> letrasUsadas = new HashSet<>();
 
 		while (!partidaTerminada) {
@@ -40,10 +44,12 @@ public class Ahorcado {
 				System.out.print(c + " ");
 			}
 
+			// Se imprimen las letras usadas
 			System.out.println("\n");
 			System.out.print("Letras usadas: ");
 			System.out.println(letrasUsadas);
 
+			// Aqui verificaremos que la entrada de la letra es correcta
 			boolean seguirVerificacion = true;
 			while (seguirVerificacion) {
 				try {
@@ -108,6 +114,7 @@ public class Ahorcado {
 	}
 
 	public static void ahorcado(int limiteFallos) {
+		// Salida para mustrar el muñeco y mostrar visualmente cuantos intentos quedan
 		switch (limiteFallos) {
 		case 6:
 			System.out.println("  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========");
