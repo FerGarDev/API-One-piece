@@ -193,7 +193,7 @@ public class Main {
 			System.out.println("---- Datos interesantes ----");
 			System.out.println("1. Top 10 personajes con mayor recompensa");
 			System.out.println("2. Distribucion de los tipos de frutas del diablo");
-			System.out.println("3. xxx");
+			System.out.println("3. Promedio de personas por tripulacion");
 			System.out.println("4. xxx");
 			System.out.println("5. Salir");
 			System.out.print("Introuce una opcion de las disponibles: ");
@@ -207,11 +207,11 @@ public class Main {
 					datos.tiposFrutas();
 					break;
 				case 3:
+					datos.promedio();
 					break;
 				case 4:
 					break;
 				case 5:
-					System.out.println("Hasta la proxima");
 					terminar = true;
 					break;
 				default:

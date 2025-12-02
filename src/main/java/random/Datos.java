@@ -54,7 +54,7 @@ public class Datos {
 				for (int i = listaRecompensas.size() - 1; i >= 0; i--) {
 					// %n hace de salto de linea, %-40s el nombre ocupa 40 caracteres y se pone a la
 					// izquierda, %15d la recompensa ocupa 15 caracteres y se pone a la derecha
-					System.out.printf("%-32s %15d%n", listaRecompensasPersonaje.get(listaRecompensas.get(i)),
+					System.out.printf("%-32s %10d%n", listaRecompensasPersonaje.get(listaRecompensas.get(i)),
 							listaRecompensas.get(i));
 
 				}
@@ -107,14 +107,63 @@ public class Datos {
 				}
 			}
 			System.out.println("=== DISTRIBUCIÓN DE FRUTAS ===\n");
-			System.out.printf("%-30s %10d%n", "Total de frutas", contadorTotal);
-			System.out.printf("%-30s %10d%n", "Total de Paramecias", contadorParamecia);
-			System.out.printf("%-30s %10d%n", "Total de Zoans", contadorZoan);
-			System.out.printf("%-30s %10d%n", "Total de Logias", contadorLogia);
-			System.out.printf("%-30s %10d%n", "Total de Zoans Miticas", contadorZoanMitica);
-			System.out.printf("%-30s %10d%n", "Total de Zoans Prehistoricas", contadorZoanAntigua);
-			System.out.printf("%-30s %10d%n", "Total de Smiles", contadorSmile);
+			System.out.printf("%-30s %5d%n", "Total de frutas", contadorTotal);
+			System.out.printf("%-30s %5d%n", "Total de Paramecias", contadorParamecia);
+			System.out.printf("%-30s %5d%n", "Total de Zoans", contadorZoan);
+			System.out.printf("%-30s %5d%n", "Total de Logias", contadorLogia);
+			System.out.printf("%-30s %5d%n", "Total de Zoans Miticas", contadorZoanMitica);
+			System.out.printf("%-30s %5d%n", "Total de Zoans Prehistoricas", contadorZoanAntigua);
+			System.out.printf("%-30s %5d%n", "Total de Smiles", contadorSmile);
 
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void promedio() {
+		ObjectMapper om = new ObjectMapper();
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/crews/en"))
+				.build();
+		try {
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			ListarTripulacion datos = om.readValue(response.body(), ListarTripulacion.class);
+			Tripulacion[] usuarios = datos.getTripulaciones();
+			int maximo = 0;
+			String nombreMax = null;
+			int minimo = 999;
+			String nombreMin = null;
+			int total = 0;
+			int cantidad = 0;
+			int temp = 0;
+			for (Tripulacion u : usuarios) {
+				if (u.getNumber() != null && !u.getNumber().equals("") && !u.getNumber().equals("inconnu")) {
+					if (u.getNumber().equals("> 85")) {
+						temp = 85;
+					} else {
+						temp = Integer.parseInt(u.getNumber());
+
+					}
+					cantidad++;
+					total = total + temp;
+					if (maximo < temp) {
+						maximo = temp;
+						nombreMax = u.getName();
+					}
+					if (minimo > temp) {
+						minimo = temp;
+						nombreMin = u.getName();
+					}
+				}
+			}
+			total = total / cantidad;
+			System.out.println();
+			System.out.println("=== PROMEDIO TRIPULANTES ===\n");
+			System.out.printf("%-10s %1d%n", "Promedio", total);
+			System.out.printf("%-10s %-25s %10d%n", "Maximo", nombreMax, maximo);
+			System.out.printf("%-10s %-25s %10d%n", "Minimo", nombreMin, minimo);
 
 		} catch (IOException e) {
 			e.printStackTrace();
