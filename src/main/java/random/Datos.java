@@ -65,121 +65,98 @@ public class Datos {
 
 	}
 
-	public void tiposFrutas() {
-		ObjectMapper om = new ObjectMapper();
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/fruits/en"))
-				.build();
-		try {
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-			ListarFrutas datos = om.readValue(response.body(), ListarFrutas.class);
-			Fruta[] usuarios = datos.getFrutas();
-			System.out.println();
-			// Se pone un contador total y un contador para cada dato
-			int contadorTotal = 0;
-			int contadorParamecia = 0;
-			int contadorZoan = 0;
-			int contadorLogia = 0;
-			int contadorZoanMitica = 0;
-			int contadorZoanAntigua = 0;
-			int contadorSmile = 0;
-			for (Fruta u : usuarios) {
-				// El total siempre se sumara y gracias al switch se sumara del tipo
-				// correspondiente
-				contadorTotal++;
-				switch (u.getType()) {
-				case "Paramecia":
-					contadorParamecia++;
-					break;
-				case "Zoan":
-					contadorZoan++;
-					break;
-				case "Logia":
-					contadorLogia++;
-					break;
-				case "Smile":
-					contadorSmile++;
-					break;
-				case "Zoan Mythique":
-					contadorZoanMitica++;
-					break;
-				case "Zoan Antique":
-					contadorZoanAntigua++;
-					break;
-				}
-			}
-			// Se imprimen los resultados con el printf
-			System.out.println("=== DISTRIBUCIÓN DE FRUTAS ===\n");
-			System.out.printf("%-30s %5d%n", "Total de frutas", contadorTotal);
-			System.out.printf("%-30s %5d%n", "Total de Paramecias", contadorParamecia);
-			System.out.printf("%-30s %5d%n", "Total de Zoans", contadorZoan);
-			System.out.printf("%-30s %5d%n", "Total de Logias", contadorLogia);
-			System.out.printf("%-30s %5d%n", "Total de Zoans Miticas", contadorZoanMitica);
-			System.out.printf("%-30s %5d%n", "Total de Zoans Prehistoricas", contadorZoanAntigua);
-			System.out.printf("%-30s %5d%n", "Total de Smiles", contadorSmile);
+	public void tiposFrutas(ListarFrutas datos) {
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		Fruta[] usuarios = datos.getFrutas();
+		System.out.println();
+		// Se pone un contador total y un contador para cada dato
+		int contadorTotal = 0;
+		int contadorParamecia = 0;
+		int contadorZoan = 0;
+		int contadorLogia = 0;
+		int contadorZoanMitica = 0;
+		int contadorZoanAntigua = 0;
+		int contadorSmile = 0;
+		for (Fruta u : usuarios) {
+			// El total siempre se sumara y gracias al switch se sumara del tipo
+			// correspondiente
+			contadorTotal++;
+			switch (u.getType()) {
+			case "Paramecia":
+				contadorParamecia++;
+				break;
+			case "Zoan":
+				contadorZoan++;
+				break;
+			case "Logia":
+				contadorLogia++;
+				break;
+			case "Smile":
+				contadorSmile++;
+				break;
+			case "Zoan Mythique":
+				contadorZoanMitica++;
+				break;
+			case "Zoan Antique":
+				contadorZoanAntigua++;
+				break;
+			}
 		}
+		// Se imprimen los resultados con el printf
+		System.out.println("=== DISTRIBUCIÓN DE FRUTAS ===\n");
+		System.out.printf("%-30s %5d%n", "Total de frutas", contadorTotal);
+		System.out.printf("%-30s %5d%n", "Total de Paramecias", contadorParamecia);
+		System.out.printf("%-30s %5d%n", "Total de Zoans", contadorZoan);
+		System.out.printf("%-30s %5d%n", "Total de Logias", contadorLogia);
+		System.out.printf("%-30s %5d%n", "Total de Zoans Miticas", contadorZoanMitica);
+		System.out.printf("%-30s %5d%n", "Total de Zoans Prehistoricas", contadorZoanAntigua);
+		System.out.printf("%-30s %5d%n", "Total de Smiles", contadorSmile);
+
 	}
 
-	public void promedio() {
-		ObjectMapper om = new ObjectMapper();
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/crews/en"))
-				.build();
-		try {
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-			ListarTripulacion datos = om.readValue(response.body(), ListarTripulacion.class);
-			Tripulacion[] usuarios = datos.getTripulaciones();
-			// Se determinan los variables a usar
-			int maximo = 0;
-			String nombreMax = null;
-			int minimo = 999;
-			String nombreMin = null;
-			int total = 0;
-			int cantidad = 0;
-			int temp = 0;
-			for (Tripulacion u : usuarios) {
-				// Se confirma que no haya errores en el dato
-				if (u.getNumber() != null && !u.getNumber().equals("") && !u.getNumber().equals("inconnu")) {
-					// Existe un dato especifico de la API que sale mal, este if es para tal caso
-					if (u.getNumber().equals("> 85")) {
-						temp = 85;
-					} else {
-						// Se pasa a int
-						temp = Integer.parseInt(u.getNumber());
+	public void promedio(ListarTripulacion datos) {
+		Tripulacion[] usuarios = datos.getTripulaciones();
+		// Se determinan los variables a usar
+		int maximo = 0;
+		String nombreMax = null;
+		int minimo = 999;
+		String nombreMin = null;
+		int total = 0;
+		int cantidad = 0;
+		int temp = 0;
+		for (Tripulacion u : usuarios) {
+			// Se confirma que no haya errores en el dato
+			if (u.getNumber() != null && !u.getNumber().equals("") && !u.getNumber().equals("inconnu")) {
+				// Existe un dato especifico de la API que sale mal, este if es para tal caso
+				if (u.getNumber().equals("> 85")) {
+					temp = 85;
+				} else {
+					// Se pasa a int
+					temp = Integer.parseInt(u.getNumber());
 
-					}
-					// Se actulizan los datos de maximo y minimo si se cumplen las condiciones y los
-					// datos de total y cantidad
-					cantidad++;
-					total = total + temp;
-					if (maximo < temp) {
-						maximo = temp;
-						nombreMax = u.getName();
-					}
-					if (minimo > temp) {
-						minimo = temp;
-						nombreMin = u.getName();
-					}
+				}
+				// Se actulizan los datos de maximo y minimo si se cumplen las condiciones y los
+				// datos de total y cantidad
+				cantidad++;
+				total = total + temp;
+				if (maximo < temp) {
+					maximo = temp;
+					nombreMax = u.getName();
+				}
+				if (minimo > temp) {
+					minimo = temp;
+					nombreMin = u.getName();
 				}
 			}
-			// Se actuliza correctamente el dato de total y se imprime con printf
-			total = total / cantidad;
-			System.out.println();
-			System.out.println("=== PROMEDIO TRIPULANTES ===\n");
-			System.out.printf("%-10s %1d%n", "Promedio", total);
-			System.out.printf("%-10s %-25s %10d%n", "Maximo", nombreMax, maximo);
-			System.out.printf("%-10s %-25s %10d%n", "Minimo", nombreMin, minimo);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
+		// Se actuliza correctamente el dato de total y se imprime con printf
+		total = total / cantidad;
+		System.out.println();
+		System.out.println("=== PROMEDIO TRIPULANTES ===\n");
+		System.out.printf("%-10s %1d%n", "Promedio", total);
+		System.out.printf("%-10s %-25s %10d%n", "Maximo", nombreMax, maximo);
+		System.out.printf("%-10s %-25s %10d%n", "Minimo", nombreMin, minimo);
+
 	}
 
 	public void general() {

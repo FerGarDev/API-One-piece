@@ -30,6 +30,9 @@ public class Main {
 	private static File archivo;
 	// Se declara la cache para que todos los metodos sean mucho mas rapidos
 	private static Map<String, ListaPersonajes> cache = new HashMap<String, ListaPersonajes>();
+	private static Map<String, ListarFrutas> cache2 = new HashMap<String, ListarFrutas>();
+	private static Map<String, ListarTripulacion> cache3 = new HashMap<String, ListarTripulacion>();
+	private static Map<String, ListarBarcos> cache4 = new HashMap<String, ListarBarcos>();
 
 	public Main() {
 		listaPersonajes = new HashMap<String, String>();
@@ -59,13 +62,13 @@ public class Main {
 					listar.listarPeronsajes(cache.get("https://api.api-onepiece.com/v2/characters/en"));
 					break;
 				case 2:
-					listar.lisarFrutas();
+					listar.lisarFrutas(cache2.get("https://api.api-onepiece.com/v2/fruits/en"));
 					break;
 				case 3:
-					listar.listarTripulaciones();
+					listar.listarTripulaciones(cache3.get("https://api.api-onepiece.com/v2/crews/en"));
 					break;
 				case 4:
-					listar.listarBarcos();
+					listar.listarBarcos(cache4.get("https://api.api-onepiece.com/v2/boats/en"));
 					break;
 				case 5:
 					terminar = true;
@@ -251,10 +254,10 @@ public class Main {
 					datos.recompensas(cache.get("https://api.api-onepiece.com/v2/characters/en"));
 					break;
 				case 2:
-					datos.tiposFrutas();
+					datos.tiposFrutas(cache2.get("https://api.api-onepiece.com/v2/fruits/en"));
 					break;
 				case 3:
-					datos.promedio();
+					datos.promedio(cache3.get("https://api.api-onepiece.com/v2/crews/en"));
 					break;
 				case 4:
 					System.out.println("Por implementar");
@@ -346,7 +349,7 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		Main main = new Main();
 		// Revisa si hay conexion para ver si se ejecuta la aplicacion
-		if (main.cargarLista()) {
+		if (main.cargarLista() || main.cargarLista2() || main.cargarLista3() || main.cargarLista4()) {
 			System.out.println(
 					"Hay un problema con la conexion a la API, no es posible conectarse por tanto no es posible conectarse a la aplicacion");
 		} else {
@@ -456,6 +459,60 @@ public class Main {
 			}
 			return false;
 			// Si salta un error se devolvera true
+		} catch (IOException e) {
+			return true;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return true;
+		}
+	}
+
+	public boolean cargarLista2() {
+		ObjectMapper om = new ObjectMapper();
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/fruits/en"))
+				.build();
+		try {
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			ListarFrutas datos = om.readValue(response.body(), ListarFrutas.class);
+			cache2.put("https://api.api-onepiece.com/v2/fruits/en", datos);
+			return false;
+		} catch (IOException e) {
+			return true;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return true;
+		}
+	}
+
+	public boolean cargarLista3() {
+		ObjectMapper om = new ObjectMapper();
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/crews/en"))
+				.build();
+		try {
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			ListarTripulacion datos = om.readValue(response.body(), ListarTripulacion.class);
+			cache3.put("https://api.api-onepiece.com/v2/crews/en", datos);
+			return false;
+		} catch (IOException e) {
+			return true;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return true;
+		}
+	}
+
+	public boolean cargarLista4() {
+		ObjectMapper om = new ObjectMapper();
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/boats/en"))
+				.build();
+		try {
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			ListarBarcos datos = om.readValue(response.body(), ListarBarcos.class);
+			cache4.put("https://api.api-onepiece.com/v2/boats/en", datos);
+			return false;
 		} catch (IOException e) {
 			return true;
 		} catch (InterruptedException e) {
