@@ -218,6 +218,7 @@ public class Main {
 				String borrar = sc.nextLine();
 				if (borrar.equals("BORRAR")) {
 					vaciar();
+					System.out.println("Archivo vaciado correctamente");
 					return true;
 				} else {
 					return false;
@@ -244,7 +245,7 @@ public class Main {
 			System.out.println("1. Top 10 personajes con mayor recompensa");
 			System.out.println("2. Distribucion de los tipos de frutas del diablo");
 			System.out.println("3. Promedio de personas por tripulacion");
-			System.out.println("4. Datos por tripulacion");
+			System.out.println("4. Barcos por tripulacion");
 			System.out.println("5. Salir");
 			System.out.print("Introduce una opcion de las disponibles: ");
 			try {
@@ -260,7 +261,8 @@ public class Main {
 					datos.promedio(cache3.get("https://api.api-onepiece.com/v2/crews/en"));
 					break;
 				case 4:
-					System.out.println("Por implementar");
+					datos.barcosPorTripulacion(cache4.get("https://api.api-onepiece.com/v2/boats/en"),
+							cache3.get("https://api.api-onepiece.com/v2/crews/en"));
 					break;
 				case 5:
 					terminar = true;
@@ -373,9 +375,11 @@ public class Main {
 						String eleccion = sc.nextLine();
 						if (eleccion.equals("1")) {
 							main.vaciar();
+							System.out.println("Archivo vaciado exitosamente");
 							valido = true;
 						} else {
 							if (main.comprobar()) {
+								System.out.println("Archivo cargado existosamente");
 								valido = true;
 							} else {
 								System.out.println("Ponga otro archivo:");

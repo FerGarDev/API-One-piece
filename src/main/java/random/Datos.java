@@ -159,44 +159,36 @@ public class Datos {
 
 	}
 
-	public void general() {
-		ObjectMapper om = new ObjectMapper();
-		HttpClient client = HttpClient.newHttpClient();
-		// Se declara un request por api, a su vez tambien un response y array por cada
-		// uno
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/crews/en"))
-				.build();
-		HttpRequest request2 = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/boats/en"))
-				.build();
-		HttpRequest request3 = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/characters/en"))
-				.build();
-		try {
+	// El ultimo dato sera la cantida de barcos por tripulacion
+	public void barcosPorTripulacion(ListarBarcos datos, ListarTripulacion datos2) {
+		Barco[] usuarios = datos.getBarco();
 
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-			ListarTripulacion datos = om.readValue(response.body(), ListarTripulacion.class);
-			Tripulacion[] usuarios = datos.getTripulaciones();
+		Tripulacion[] usuarios2 = datos2.getTripulaciones();
 
-			HttpResponse<String> response2 = client.send(request2, BodyHandlers.ofString());
-			ListarBarcos datos2 = om.readValue(response2.body(), ListarBarcos.class);
-			Barco[] usuarios2 = datos2.getBarco();
-
-			HttpResponse<String> response3 = client.send(request3, BodyHandlers.ofString());
-			ListaPersonajes datos3 = om.readValue(response3.body(), ListaPersonajes.class);
-			Personajes[] usuarios3 = datos3.getPersonajes();
-
-			int contador = 1;
-			System.out.println();
-			System.out.println("=== DATOS TRIPULACION ===\n");
-			for (Tripulacion u : usuarios) {
-				System.out.println(contador);
-				contador++;
+		// Declaro un map para almacenar la crew con la cantidad de barcos
+		Map<String, Integer> barcosTripulacion = new HashMap<String, Integer>();
+		System.out.println();
+		System.out.println("=== CANTIDAD DE BARCOS POR TRIPULACION ===\n");
+		// Se hacen dos bucle revisando todos los barcos en cada tripulacion, si estos
+		// coinciden se mete al mapa
+		for (Tripulacion u : usuarios2) {
+			for (Barco u2 : usuarios) {
+				if (u2.getCrew() != null && u.getName().equals(u2.getCrew().getName())) {
+					// Si ua existe el dato se suma uno, sino se pone con 1
+					if (!barcosTripulacion.containsKey(u.getName())) {
+						barcosTripulacion.put(u.getName(), 1);
+					} else {
+						barcosTripulacion.put(u.getName(), barcosTripulacion.get(u.getName()) + 1);
+					}
+				}
 			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
+		// Se imprimen mediante crear una lista de las keys y se imprime con print f
+		ArrayList<String> keys = new ArrayList<>(barcosTripulacion.keySet());
+		for (int i = 0; i < barcosTripulacion.size(); i++) {
+			System.out.printf("%-30s %5d%n", keys.get(i), barcosTripulacion.get(keys.get(i)));
+		}
+
 	}
 
 }
