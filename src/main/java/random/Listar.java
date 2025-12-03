@@ -29,89 +29,78 @@ public class Listar {
 
 	// Los cuatro metodos de listado funcionaran igual siendo cada uno para un dato
 	// a listar
-	public void listarPeronsajes() {
+	public void listarPeronsajes(ListaPersonajes datos) {
 		Scanner sc = new Scanner(System.in);
 		ArrayList<String> personajesLista = new ArrayList<String>();
-		ObjectMapper om = new ObjectMapper();
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/characters/en"))
-				.build();
-		try {
-			// Se preguntara el si quieres que salgan los datos listados o no
-			System.out.print("Si quieres los resultados paginados ponga 1: ");
-			String decision = sc.nextLine();
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-			ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
-			Personajes[] usuarios = datos.getPersonajes();
+		// Se preguntara el si quieres que salgan los datos listados o no
+		System.out.print("Si quieres los resultados paginados ponga 1: ");
+		String decision = sc.nextLine();
+		Personajes[] usuarios = datos.getPersonajes();
 
-			System.out.println("Personajes:\n");
-			if (decision.equals("1")) {
-				boolean fin = false;
-				int contador = 0;
-				// Primero se añadiran todos los peronajes a la lista hasta que esten todos
-				while (!fin) {
-					Personajes u = usuarios[contador];
-					personajesLista.add(u.toString());
-					contador++;
-					if (contador == usuarios.length) {
-						fin = true;
-					}
-				}
-				int elegirPagina = 0;
-				// Seguimos con un for que imprime hasta 5 datos
-				for (int i = 0; i < personajesLista.size(); i++) {
-					System.out.println(personajesLista.get(i));
-					if ((i + 1) % 5 == 0 && i != 0) {
-						// una vez impreso 5 se cumple el if y pregunta por opciones
-						boolean seguir = true;
-						do {
-							System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
-							try {
-								elegirPagina = sc.nextInt();
-								switch (elegirPagina) {
-								case 0:
-									// En la primera se saldra y no se listara mas
-									i = personajesLista.size();
-									seguir = false;
-									break;
-								case 1:
-									// En la segunda se pasa de pagina permitiendo seguir imprimiendo
-									clearConsole();
-									seguir = false;
-									break;
-								case 2:
-									// Si no hay pagina anterior se indicara, si hay se le restaran 10 valores a la
-									// i asi imprimiendo la pagina anterior
-									clearConsole();
-									if (i == 4 || i == -1) {
-										System.out.println("No hay pagina anterior");
-										i = -1;
-									} else {
-										i = i - 10;
-										seguir = false;
-									}
-									break;
-								default:
-									System.out.println("Elige un numero correcto");
-								}
-							} catch (InputMismatchException e) {
-								System.err.println("Introuce un numero, no un caracter\n");
-								sc.next();
-							}
-						} while (seguir);
-					}
-				}
-				// Sino se quieren paginados se daran de manera normal
-			} else {
-				for (Personajes u : usuarios) {
-					System.out.println(u.toString());
+		System.out.println("Personajes:\n");
+		if (decision.equals("1")) {
+			boolean fin = false;
+			int contador = 0;
+			// Primero se añadiran todos los peronajes a la lista hasta que esten todos
+			while (!fin) {
+				Personajes u = usuarios[contador];
+				personajesLista.add(u.toString());
+				contador++;
+				if (contador == usuarios.length) {
+					fin = true;
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			int elegirPagina = 0;
+			// Seguimos con un for que imprime hasta 5 datos
+			for (int i = 0; i < personajesLista.size(); i++) {
+				System.out.println(personajesLista.get(i));
+				if ((i + 1) % 5 == 0 && i != 0) {
+					// una vez impreso 5 se cumple el if y pregunta por opciones
+					boolean seguir = true;
+					do {
+						System.out.println("Salir (0) || Siguiente pagina (1) || Pagina anterior (2)");
+						try {
+							elegirPagina = sc.nextInt();
+							switch (elegirPagina) {
+							case 0:
+								// En la primera se saldra y no se listara mas
+								i = personajesLista.size();
+								seguir = false;
+								break;
+							case 1:
+								// En la segunda se pasa de pagina permitiendo seguir imprimiendo
+								clearConsole();
+								seguir = false;
+								break;
+							case 2:
+								// Si no hay pagina anterior se indicara, si hay se le restaran 10 valores a la
+								// i asi imprimiendo la pagina anterior
+								clearConsole();
+								if (i == 4 || i == -1) {
+									System.out.println("No hay pagina anterior");
+									i = -1;
+								} else {
+									i = i - 10;
+									seguir = false;
+								}
+								break;
+							default:
+								System.out.println("Elige un numero correcto");
+							}
+						} catch (InputMismatchException e) {
+							System.err.println("Introuce un numero, no un caracter\n");
+							sc.next();
+						}
+					} while (seguir);
+				}
+			}
+			// Sino se quieren paginados se daran de manera normal
+		} else {
+			for (Personajes u : usuarios) {
+				System.out.println(u.toString());
+			}
 		}
+
 	}
 
 	public void lisarFrutas() {
@@ -354,7 +343,7 @@ public class Listar {
 		}
 	}
 
-	public boolean anhadirFavoritos(String nombre) {
+	public boolean anhadirFavoritos(String nombre, ListaPersonajes datos) {
 		boolean anhadir = true;
 		// Primero se revisa que el personaje este en la lista
 		for (int i = 0; i < listaFavoritos.size(); i++) {
@@ -367,26 +356,15 @@ public class Listar {
 		if (anhadir) {
 			// Si no esta se busca en la API en personaje que coincida con el nombre y se
 			// añade a los favs
-			ObjectMapper om = new ObjectMapper();
-			HttpClient client = HttpClient.newHttpClient();
-			HttpRequest request = HttpRequest.newBuilder()
-					.uri(URI.create("https://api.api-onepiece.com/v2/characters/en")).build();
-			try {
-				HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-				ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
-				Personajes[] usuarios = datos.getPersonajes();
-				for (Personajes u : usuarios) {
-					if (u.getName().equals(nombre)) {
-						listaFavoritos.add(u);
-						System.out.println("Se añadio correctamente");
-						return true;
-					}
+			Personajes[] usuarios = datos.getPersonajes();
+			for (Personajes u : usuarios) {
+				if (u.getName().equals(nombre)) {
+					listaFavoritos.add(u);
+					System.out.println("Se añadio correctamente");
+					return true;
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
+
 		}
 		return false;
 	}
@@ -412,7 +390,7 @@ public class Listar {
 		}
 	}
 
-	public void cargarFavoritos(File file) {
+	public void cargarFavoritos(File file, ListaPersonajes datos) {
 		// Primero se pondran los personajes del fichero de favoritos en una lista
 		ArrayList<String> nombrePersonaje = new ArrayList<String>();
 		try (FileReader fr = new FileReader(file); BufferedReader fw = new BufferedReader(fr)) {
@@ -428,30 +406,19 @@ public class Listar {
 		// lo hace comprobando el personaje que coincida con su nombre asi añadiendolo
 		if (!nombrePersonaje.isEmpty()) {
 			Set<String> nombres = new HashSet<>(nombrePersonaje);
-			ObjectMapper om = new ObjectMapper();
-			HttpClient client = HttpClient.newHttpClient();
-			HttpRequest request = HttpRequest.newBuilder()
-					.uri(URI.create("https://api.api-onepiece.com/v2/characters/en")).build();
-			try {
-				HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-				ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
-				Personajes[] usuarios = datos.getPersonajes();
-				for (Personajes u : usuarios) {
-					if (nombres.contains(u.getName())) {
-						listaFavoritos.add(u);
-					}
+			Personajes[] usuarios = datos.getPersonajes();
+			for (Personajes u : usuarios) {
+				if (nombres.contains(u.getName())) {
+					listaFavoritos.add(u);
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
+
 		}
 	}
 
 	// Mismo metodo que el anterior que retornara la lista de los favoritos para los
 	// juegos
-	public ArrayList<Personajes> cargarFavoritosJuegos(File file) {
+	public ArrayList<Personajes> cargarFavoritosJuegos(File file, ListaPersonajes datos) {
 		ArrayList<String> nombrePersonaje = new ArrayList<String>();
 		try (FileReader fr = new FileReader(file); BufferedReader fw = new BufferedReader(fr)) {
 			String linea = fw.readLine();
@@ -464,25 +431,14 @@ public class Listar {
 		}
 		if (!nombrePersonaje.isEmpty()) {
 			Set<String> nombres = new HashSet<>(nombrePersonaje);
-			ObjectMapper om = new ObjectMapper();
-			HttpClient client = HttpClient.newHttpClient();
-			HttpRequest request = HttpRequest.newBuilder()
-					.uri(URI.create("https://api.api-onepiece.com/v2/characters/en")).build();
-			try {
-				HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-				ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
-				Personajes[] usuarios = datos.getPersonajes();
-				for (Personajes u : usuarios) {
-					if (nombres.contains(u.getName())) {
-						listaFavoritos.add(u);
-					}
+			Personajes[] usuarios = datos.getPersonajes();
+			for (Personajes u : usuarios) {
+				if (nombres.contains(u.getName())) {
+					listaFavoritos.add(u);
 				}
-				return listaFavoritos;
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
+			return listaFavoritos;
+
 		}
 		return listaFavoritos;
 	}

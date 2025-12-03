@@ -28,6 +28,8 @@ public class Main {
 	// Variable de lista de nombres de todos los personajes con su trabajo y archivo
 	private Map<String, String> listaPersonajes;
 	private static File archivo;
+	// Se declara la cache para que todos los metodos sean mucho mas rapidos
+	private static Map<String, ListaPersonajes> cache = new HashMap<String, ListaPersonajes>();
 
 	public Main() {
 		listaPersonajes = new HashMap<String, String>();
@@ -49,12 +51,12 @@ public class Main {
 			System.out.println("3. Tripulaciones");
 			System.out.println("4. Barcos");
 			System.out.println("5. Salir");
-			System.out.print("Introuce una opcion de las disponibles: ");
+			System.out.print("Introduce una opcion de las disponibles: ");
 			try {
 				eleccion = sc.nextInt();
 				switch (eleccion) {
 				case 1:
-					listar.listarPeronsajes();
+					listar.listarPeronsajes(cache.get("https://api.api-onepiece.com/v2/characters/en"));
 					break;
 				case 2:
 					listar.lisarFrutas();
@@ -74,7 +76,7 @@ public class Main {
 				System.out.println(
 						"===========================================================================================================================");
 			} catch (InputMismatchException e) {
-				System.err.println("Introuce un numero, no un caracter");
+				System.err.println("Introduce un numero, no un caracter");
 				System.out.println(
 						"===========================================================================================================================");
 				sc.next();
@@ -130,7 +132,7 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int eleccion = 0;
 		Listar listar = new Listar();
-		listar.cargarFavoritos(archivo);
+		listar.cargarFavoritos(archivo, cache.get("https://api.api-onepiece.com/v2/characters/en"));
 		boolean terminar = false;
 		System.out.println(
 				"===========================================================================================================================");
@@ -140,7 +142,7 @@ public class Main {
 			System.out.println("2. Quitar de la lista de personajes favoritos");
 			System.out.println("3. Listar personajes favoritos");
 			System.out.println("4. Salir");
-			System.out.print("Introuce una opcion de las disponibles: ");
+			System.out.print("Introduce una opcion de las disponibles: ");
 			try {
 				eleccion = sc.nextInt();
 				switch (eleccion) {
@@ -152,7 +154,8 @@ public class Main {
 					String nombre = sc.nextLine();
 					ArrayList<String> keys = new ArrayList<>(listaPersonajes.keySet());
 					if (keys.contains(nombre)) {
-						if (listar.anhadirFavoritos(nombre)) {
+						if (listar.anhadirFavoritos(nombre,
+								cache.get("https://api.api-onepiece.com/v2/characters/en"))) {
 							anhadirListaFav(nombre);
 						}
 					} else {
@@ -182,7 +185,7 @@ public class Main {
 				System.out.println(
 						"===========================================================================================================================");
 			} catch (InputMismatchException e) {
-				System.err.println("Introuce un numero, no un caracter");
+				System.err.println("Introduce un numero, no un caracter");
 				System.out.println(
 						"===========================================================================================================================");
 				sc.next();
@@ -200,19 +203,28 @@ public class Main {
 
 	// Se revisara el fichero damo siendo que si contiene contenido el cual no sera
 	// usado por la app se vaciara
-	public void comprobar() {
+	public boolean comprobar() {
+		Scanner sc = new Scanner(System.in);
 		try (FileReader fr = new FileReader(archivo); BufferedReader fw = new BufferedReader(fr)) {
 			String linea = fw.readLine();
 			// Se comprueba con un contains de la lista
 			ArrayList<String> keys = new ArrayList<>(listaPersonajes.keySet());
 			if (!keys.contains(linea) && linea != null) {
-				System.out.println(
-						"ERROR, El archivo no es procesable debido a que contiene contenido no desea, se vaciara automaticamente");
-				vaciar();
+				System.out.println("ERROR, El archivo no es procesable debido a que contiene contenido no desea");
+				System.out.print("Ponga BORRAR si no tiene problema en que se borre su contenido: ");
+				String borrar = sc.nextLine();
+				if (borrar.equals("BORRAR")) {
+					vaciar();
+					return true;
+				} else {
+					return false;
+				}
 			}
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 	public void datosSeleccion() {
@@ -231,12 +243,12 @@ public class Main {
 			System.out.println("3. Promedio de personas por tripulacion");
 			System.out.println("4. Datos por tripulacion");
 			System.out.println("5. Salir");
-			System.out.print("Introuce una opcion de las disponibles: ");
+			System.out.print("Introduce una opcion de las disponibles: ");
 			try {
 				eleccion = sc.nextInt();
 				switch (eleccion) {
 				case 1:
-					datos.recompensas();
+					datos.recompensas(cache.get("https://api.api-onepiece.com/v2/characters/en"));
 					break;
 				case 2:
 					datos.tiposFrutas();
@@ -245,7 +257,7 @@ public class Main {
 					datos.promedio();
 					break;
 				case 4:
-					datos.general();
+					System.out.println("Por implementar");
 					break;
 				case 5:
 					terminar = true;
@@ -257,7 +269,7 @@ public class Main {
 				System.out.println(
 						"===========================================================================================================================");
 			} catch (InputMismatchException e) {
-				System.err.println("Introuce un numero, no un caracter");
+				System.err.println("Introduce un numero, no un caracter");
 				System.out.println(
 						"===========================================================================================================================");
 				sc.next();
@@ -277,11 +289,10 @@ public class Main {
 		System.out.print("Si quieres jugar con tus personajes favoritos, ponga 1: ");
 		String siLista = sc.nextLine();
 		while (!terminar) {
-			System.out.println("---- Juegos ----");
-			System.out.println("1. Ahorcado");
-			System.out.println("2. Wordle");
-			System.out.println("3. Salir");
-			System.out.print("Introuce una opcion de las disponibles: ");
+			System.out.println("---- Ahorcado ----");
+			System.out.println("1. Jugar");
+			System.out.println("2. Salir");
+			System.out.print("Introduce una opcion de las disponibles: ");
 			try {
 				eleccion = sc.nextInt();
 				switch (eleccion) {
@@ -290,7 +301,8 @@ public class Main {
 					// primero
 					if (siLista.equals("1")) {
 						Listar temp = new Listar();
-						ArrayList<Personajes> listaFavTemp = temp.cargarFavoritosJuegos(archivo);
+						ArrayList<Personajes> listaFavTemp = temp.cargarFavoritosJuegos(archivo,
+								cache.get("https://api.api-onepiece.com/v2/characters/en"));
 						// En caso de estar vacia no se podra jugar
 						if (listaFavTemp.isEmpty()) {
 							System.out.println("No tienes nadie en la lista de favs, no puedes jugar");
@@ -313,9 +325,6 @@ public class Main {
 					}
 					break;
 				case 2:
-
-					break;
-				case 3:
 					terminar = true;
 					break;
 				default:
@@ -361,10 +370,14 @@ public class Main {
 						String eleccion = sc.nextLine();
 						if (eleccion.equals("1")) {
 							main.vaciar();
+							valido = true;
 						} else {
-							main.comprobar();
+							if (main.comprobar()) {
+								valido = true;
+							} else {
+								System.out.println("Ponga otro archivo:");
+							}
 						}
-						valido = true;
 					}
 				} catch (IOException e) {
 					System.out.println("No es valido ese fichero, vuelva a ponerlo: ");
@@ -379,9 +392,9 @@ public class Main {
 				System.out.println("1. Listar");
 				System.out.println("2. Favortios");
 				System.out.println("3. Datos interesantes");
-				System.out.println("4. Juegos");
+				System.out.println("4. Jugar ahorcado");
 				System.out.println("5. Salir");
-				System.out.print("Introuce una opcion de las disponibles: ");
+				System.out.print("Introduce una opcion de las disponibles: ");
 				try {
 					eleccion = sc.nextInt();
 					switch (eleccion) {
@@ -429,6 +442,9 @@ public class Main {
 		try {
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
+			// Se añaden los datos a la cache a la cual estaremos siempre accediendo para
+			// ahorra tiempo
+			cache.put("https://api.api-onepiece.com/v2/characters/en", datos);
 			Personajes[] usuarios = datos.getPersonajes();
 			for (Personajes u : usuarios) {
 				// Si es null o no hay nada tendra valor por defecto

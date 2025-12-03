@@ -18,61 +18,51 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Datos {
 
-	public void recompensas() {
+	public void recompensas(ListaPersonajes datos) {
 		// Se declara un array de recompensas y otro del la recompensa con el personaje
 		ArrayList<Long> listaRecompensas = new ArrayList<Long>();
 		Map<Long, String> listaRecompensasPersonaje = new HashMap<Long, String>();
-		ObjectMapper om = new ObjectMapper();
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.api-onepiece.com/v2/characters/en"))
-				.build();
-		try {
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-			ListaPersonajes datos = om.readValue(response.body(), ListaPersonajes.class);
-			Personajes[] usuarios = datos.getPersonajes();
-			for (Personajes u : usuarios) {
-				// Primero se confirma que el dato exista
-				if (u.getBounty() != null && !u.getBounty().equals("")) {
 
-					// Se pasa el dato string a un long
-					String temp = u.getBounty();
-					temp = temp.replace(".", "");
-					long recompensa = Long.parseLong(temp);
-					// Se añade al mapa junto con su nombre y a la lista si todavia no tiene 10
-					// espacios
-					listaRecompensasPersonaje.put(recompensa, u.getName());
-					if (listaRecompensas.size() < 10) {
+		Personajes[] usuarios = datos.getPersonajes();
+		for (Personajes u : usuarios) {
+			// Primero se confirma que el dato exista
+			if (u.getBounty() != null && !u.getBounty().equals("")) {
+
+				// Se pasa el dato string a un long
+				String temp = u.getBounty();
+				temp = temp.replace(".", "");
+				long recompensa = Long.parseLong(temp);
+				// Se añade al mapa junto con su nombre y a la lista si todavia no tiene 10
+				// espacios
+				listaRecompensasPersonaje.put(recompensa, u.getName());
+				if (listaRecompensas.size() < 10) {
+					listaRecompensas.add(recompensa);
+				} else {
+					// Si ya tiene 10 se ordenara con collections, para comporar el primero, el mas
+					// bajo, y en caso de ser menor ser borrado
+					Collections.sort(listaRecompensas);
+					if (listaRecompensas.get(0) < recompensa) {
+						listaRecompensas.remove(0);
 						listaRecompensas.add(recompensa);
-					} else {
-						// Si ya tiene 10 se ordenara con collections, para comporar el primero, el mas
-						// bajo, y en caso de ser menor ser borrado
-						Collections.sort(listaRecompensas);
-						if (listaRecompensas.get(0) < recompensa) {
-							listaRecompensas.remove(0);
-							listaRecompensas.add(recompensa);
-						}
 					}
 				}
-
 			}
-			if (!listaRecompensas.isEmpty()) {
-				System.out.println();
-				System.out.println("=== TOP 10 RECOMPENSAS ===\n");
-				// Gracias al map podremos imprimir los resultados junto con el nombre que le
-				// corresponde a cada recompensa
-				for (int i = listaRecompensas.size() - 1; i >= 0; i--) {
-					// %n hace de salto de linea, %-40s el nombre ocupa 40 caracteres y se pone a la
-					// izquierda, %15d la recompensa ocupa 15 caracteres y se pone a la derecha
-					System.out.printf("%-32s %10d%n", listaRecompensasPersonaje.get(listaRecompensas.get(i)),
-							listaRecompensas.get(i));
 
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
+		if (!listaRecompensas.isEmpty()) {
+			System.out.println();
+			System.out.println("=== TOP 10 RECOMPENSAS ===\n");
+			// Gracias al map podremos imprimir los resultados junto con el nombre que le
+			// corresponde a cada recompensa
+			for (int i = listaRecompensas.size() - 1; i >= 0; i--) {
+				// %n hace de salto de linea, %-40s el nombre ocupa 40 caracteres y se pone a la
+				// izquierda, %15d la recompensa ocupa 15 caracteres y se pone a la derecha
+				System.out.printf("%-32s %10d%n", listaRecompensasPersonaje.get(listaRecompensas.get(i)),
+						listaRecompensas.get(i));
+
+			}
+		}
+
 	}
 
 	public void tiposFrutas() {

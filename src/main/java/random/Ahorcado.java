@@ -105,7 +105,7 @@ public class Ahorcado {
 				limiteFallos--;
 				System.out.println("Esa letra no está en la palabra");
 				System.out.println("Fallos restantes: " + limiteFallos);
-				if (limiteFallos < 4) {
+				if (limiteFallos < 4 && limiteFallos != 0) {
 					System.out.println("PISTA -> El personaje tiene de trabajo/hace -> " + pista);
 				}
 			}
